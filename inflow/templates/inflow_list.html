@@ -1,0 +1,77 @@
+{% extends 'base.html'%}
+
+{% block title %} Entradas {% endblock %}
+
+
+{% block content %}
+
+<div class="p-6">
+    <!-- Barra de ações -->
+    <div class="flex items-center justify-between mb-4">
+        <!-- Campo de pesquisa -->
+        <div class="flex">
+            <form action="{% url 'inflow_list' %}" method="get" class="flex">
+                <input type="text" placeholder="Pesquisar..." name="product" value="{{ request.GET.product }}"
+                    class="rounded-l-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-700"
+                    name="name" />
+                <button type="submit" class="bg-purple-700 text-white px-4 rounded-r-md hover:bg-purple-800">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Botão novo -->
+        <a href="{% url 'inflow_create' %}"
+            class="flex items-center bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Novo Entrada
+        </a>
+    </div>
+
+    <!-- Tabela -->
+    <div class="overflow-x-auto bg-white rounded shadow">
+        <table class="min-w-full text-sm text-left text-gray-700">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-6 py-3">ID</th>
+                    <th class="px-6 py-3">Produto</th>
+                    <th class="px-6 py-3">Fornecedor</th>
+                    <th class="px-6 py-3">Quantidade</th>
+                    <th class="px-6 py-3">Data da Entrada</th>
+                    <th class="px-6 py-3 text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inflow in inflows %}
+                <tr class="border-b odd:bg-white even:bg-gray-50 ">
+                    <td class="px-6 py-4">{{inflow.product}}</td>
+                    <td class="px-6 py-4">{{inflow.supplier}}</td>
+                    <td class="px-6 py-4">{{inflow.quantity}}</td>
+                    <td class="px-6 py-4">{{inflow.created_at}}</td>
+                    <td class="px-6 py-4 text-center space-x-2">
+                        <!-- Visualizar -->
+                        <a class="text-blue-600 hover:text-blue-800 view-details" title="Visualizar" href="{% url 'inflow_detail' inflow.pk %}"
+                            data-id="{{ inflow.pk }}">
+                            <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                <!-- ...outros registros -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginação -->
+    {% include '_pagination.html'%}
+</div>
+
+{% endblock %}

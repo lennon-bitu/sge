@@ -1,0 +1,52 @@
+{% extends 'base.html'%}
+
+{% block title %} Cadastrar Saída {% endblock %}
+
+
+{% block content %}
+
+<div class="p-6">
+    <form action="" method="post" class="max-w-md mx-auto">
+        {% csrf_token %}
+        <h2 class="text-2xl font-semibold mb-4">Cadastrar Saída</h2>
+        {{form.as_p}}
+        {% if form.errors %}
+        {% if form.non_field_errors %}
+        <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% for field in form %}
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <div class="text-red-600 text-sm mt-1">
+                {{ field.errors }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="mt-4">
+            <button type="submit"
+                class="bg-purple-700 text-white px-4 rounded-r-md hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
+                <i class="fa fa-check" aria-hidden="true"></i> Registrar Saída
+            </button>
+            <a href="{% url 'outflow_list' %}"
+                class="mt-4 bg-gray-700 text-white px-4 rounded-r-md hover:bg-grey-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"><i
+                    class="fa fa-arrow-left" aria-hidden="true"></i> Cancelar Saída</a>
+        </div>
+
+    </form>
+
+    <div class="mt-4">
+        <a href="{% url 'outflow_list' %}"
+            class="mt-4 bg-gray-700 text-white px-4 rounded-r-md hover:bg-grey-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"><i
+                class="fa fa-arrow-left" aria-hidden="true"></i> Cancelar e voltar</a>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+<div class="flex items-center justify-center" data-id="{{ object.pk }}">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        <div class="flex justify-between items-center border-b pb-2 mb-4">
+            <h2 class="text-xl font-semibold">Detalhes da Saída</h2>
+        </div>
+        <div>
+            <p><strong>Nome:</strong> <span id="detail-name" class="text-gray-700">{{object.product}}</span></p>
+            <p class="mt-2"><strong>Descrição:</strong></p>
+            <p id="detail-quantity" class="text-gray-600 mt-1">Quantidade: <strong>{{object.quantity}}</strong> </p>
+            <p id="detail-description" class="text-gray-600 mt-1">{{object.description}}</p>
+        </div>
+        <div class="px-6 py-4 text-center space-x-2">
+            <a href="{% url 'inflow_list' %}"
+                class="mt-4 bg-gray-700 text-white px-4 rounded-r-md hover:bg-grey-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"><i
+                    class="fa fa-arrow-left" aria-hidden="true"></i> voltar</a>
+        </div>
+    </div>
+
+
+</div>
+
+
+{% endblock %}

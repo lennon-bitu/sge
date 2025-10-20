@@ -1,0 +1,223 @@
+{% extends 'base.html'%}
+
+{% block title %} Marcas {% endblock %}
+
+
+{% block content %}
+
+<div class="p-6">
+    <!-- Barra de ações -->
+    <div class="flex items-center justify-between mb-4">
+        <!-- Campo de pesquisa -->
+        <div class="flex">
+            <form action="{% url 'brand_list' %}" method="get" class="flex">
+                <input type="text" placeholder="Pesquisar..." value="{{ request.GET.name }}"
+                    class="rounded-l-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-700"
+                    name="name" />
+                <button type="submit" class="bg-purple-700 text-white px-4 rounded-r-md hover:bg-purple-800">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Botão novo -->
+        <a href="{% url 'brand_create' %}"
+            class="flex items-center bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Novo
+        </a>
+    </div>
+
+    <!-- Tabela -->
+    <div class="overflow-x-auto bg-white rounded shadow">
+        <table class="min-w-full text-sm text-left text-gray-700">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-6 py-3">ID</th>
+                    <th class="px-6 py-3">Nome</th>
+                    <th class="px-6 py-3">Data</th>
+                    <th class="px-6 py-3 text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for brand in brands %}
+                <tr class="border-b odd:bg-white even:bg-gray-50 ">
+                    <td class="px-6 py-4">{{brand.pk}}</td>
+                    <td class="px-6 py-4">{{brand.name}}</td>
+                    <td class="px-6 py-4">{{brand.created_at}}</td>
+                    <td class="px-6 py-4 text-center space-x-2">
+                        <!-- Visualizar -->
+                        <button class="text-blue-600 hover:text-blue-800 view-details" title="Visualizar"
+                            data-id="{{ brand.pk }}">
+                            <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
+                        <!-- Editar -->
+                        <a class="text-yellow-600 hover:text-yellow-800" title="Editar" href="{% url 'brand_update' brand.pk %}">
+                            <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                        </a>
+                        <!-- Excluir -->
+                        <button class="text-red-600 hover:text-red-800 delete-item" title="Excluir" data-id="{{ brand.pk }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M9 3V4H4V6H5V19C5 20.1 5.9 21 7 21H17C18.1 21 19 20.1 19 19V6H20V4H15V3H9ZM7 6H17V19H7V6Z" />
+                                <path d="M9 8H11V18H9V8ZM13 8H15V18H13V8Z" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                <!-- ...outros registros -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginação -->
+    <div class="flex justify-end mt-4 space-x-1">
+        <button class="px-3 py-1 border rounded hover:bg-gray-100">Anterior</button>
+        <button class="px-3 py-1 border rounded bg-purple-700 text-white">1</button>
+        <button class="px-3 py-1 border rounded hover:bg-gray-100">2</button>
+        <button class="px-3 py-1 border rounded hover:bg-gray-100">3</button>
+        <button class="px-3 py-1 border rounded hover:bg-gray-100">Próximo</button>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div id="detailModal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 z-[9999]">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        <div class="flex justify-between items-center border-b pb-2 mb-4">
+            <h2 class="text-xl font-semibold">Detalhes da Marca</h2>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-lg">&times;</button>
+        </div>
+        <div>
+            <p><strong>Nome:</strong> <span id="detail-name" class="text-gray-700"></span></p>
+            <p class="mt-2"><strong>Descrição:</strong></p>
+            <p id="detail-description" class="text-gray-600 mt-1"></p>
+        </div>
+        <div class="px-6 py-4 text-center space-x-2">
+            <!-- Editar -->
+            <a class="text-yellow-600 hover:text-yellow-800" title="Editar" id="editButton">
+                <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5" />
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+            </a>
+            <!-- Excluir -->
+            <button class="text-red-600 hover:text-red-800" title="Excluir" id="deleteButton">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" viewBox="0 0 24 24"
+                    fill="currentColor">
+                    <path
+                        d="M9 3V4H4V6H5V19C5 20.1 5.9 21 7 21H17C18.1 21 19 20.1 19 19V6H20V4H15V3H9ZM7 6H17V19H7V6Z" />
+                    <path d="M9 8H11V18H9V8ZM13 8H15V18H13V8Z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('detailModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const editButton = document.getElementById('editButton');
+        const deleteButton = document.getElementById('deleteButton');
+
+        let currentBrandId = null; // guarda ID do item aberto
+
+        // Abrir modal com dados
+        document.querySelectorAll('.view-details').forEach(button => {
+            button.addEventListener('click', function () {
+                const brandId = this.getAttribute('data-id');
+                currentBrandId = brandId;
+
+                fetch(`/brands/${brandId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('detail-name').textContent = data.name;
+                        document.getElementById('detail-description').textContent = data.description;
+                        // 🔹 Atualiza o link de edição com o ID do item
+                        editButton.href = `/brands/${brandId}/update/`;
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                    });
+            });
+        });
+
+        // Excluir pelo botão dentro do modal
+        deleteButton.addEventListener('click', function () {
+            if (currentBrandId) {
+                confirmarExclusao(currentBrandId);
+            }
+        });
+
+        // Excluir pelo botão na tabela
+        document.querySelectorAll('.delete-item').forEach(button => {
+            button.addEventListener('click', function () {
+                const brandId = this.getAttribute('data-id');
+                confirmarExclusao(brandId);
+            });
+        });
+
+        // Fechar modal
+        closeModalBtn.addEventListener('click', function () {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        });
+
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        });
+
+        // Função de exclusão com confirmação
+        function confirmarExclusao(brandId) {
+            if (confirm("Tem certeza que deseja excluir esta marca?")) {
+                fetch(`/brands/${brandId}/delete/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken()
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert("Erro ao excluir a marca.");
+                    }
+                });
+            }
+        }
+
+        // Função para pegar CSRF Token
+        function getCSRFToken() {
+            let name = "csrftoken=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let c of ca) {
+                while (c.charAt(0) == ' ') c = c.substring(1);
+                if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+            }
+            return "";
+        }
+    });
+</script>
+
+{% endblock %}

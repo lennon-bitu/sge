@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Marcas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+    <h1 class="text-2xl font-bold mb-6">Lista de Marcas</h1>
+
+    <div class="overflow-x-auto bg-white rounded-lg shadow">
+        <table class="min-w-full text-sm text-gray-700">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="py-3 px-4 text-left">Nome</th>
+                    <th class="py-3 px-4 text-left">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for brand in brands %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="py-2 px-4">{{ brand.name }}</td>
+                    <td class="py-2 px-4">
+                        <button 
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs view-details"
+                            data-id="{{ brand.id }}">
+                            Ver Detalhes
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" class="text-center py-4">Nenhuma marca cadastrada</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal -->
+    <div id="detailModal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+            <div class="flex justify-between items-center border-b pb-2 mb-4">
+                <h2 class="text-xl font-semibold">Detalhes da Marca</h2>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-lg">&times;</button>
+            </div>
+            <div>
+                <p><strong>Nome:</strong> <span id="detail-name" class="text-gray-700"></span></p>
+                <p class="mt-2"><strong>Descrição:</strong></p>
+                <p id="detail-description" class="text-gray-600 mt-1"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('detailModal');
+        const closeModalBtn = document.getElementById('closeModal');
+
+        // Abrir modal com dados
+        document.querySelectorAll('.view-details').forEach(button => {
+            button.addEventListener('click', function() {
+                const brandId = this.getAttribute('data-id');
+
+                fetch(`/brands/${brandId}/detail/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('detail-name').textContent = data.name;
+                        document.getElementById('detail-description').textContent = data.description;
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                    });
+            });
+        });
+
+        // Fechar modal
+        closeModalBtn.addEventListener('click', function() {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        });
+
+        // Fechar modal clicando fora
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        });
+    });
+    </script>
+</body>
+</html>
