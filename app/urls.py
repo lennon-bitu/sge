@@ -12,6 +12,7 @@ urlpatterns = [
     path('', include('suppliers.urls')),
     path('', include('inflow.urls')),
     path('', include('outflow.urls')),
+    path('', include('products.urls')),
 ]
 
 if settings.DEBUG:
