@@ -4,6 +4,7 @@ from .models import Product  # Assuming you have a Product model defined
 from categories.models import Category  # Assuming you have a Category model defined
 from brands.models import Brand  # Assuming you have a Brand model defined
 from django.urls import reverse_lazy
+from app.metrics import get_product_metrics
 
 # from django.db.models import Q
 
@@ -80,6 +81,7 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         context['brands'] = Brand.objects.all()
+        context['product_metrics']  = get_product_metrics()
         return context
 
 
