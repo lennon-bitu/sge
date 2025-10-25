@@ -11,15 +11,25 @@
         <!-- Campo de pesquisa -->
         <div class="flex">
             <form action="{% url 'product_list' %}" method="get" class="flex">
-                <input type="text" placeholder="Pesquisar..." value="{{ request.GET.name }}"
+                <input type="text" placeholder="Produto" value="{{ request.GET.title }}"
                     class="rounded-l-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-700"
-                    name="name" />
+                    name="title" />
+                
+                <input type="text" placeholder="Código de barras" value="{{ request.GET.ean }}"
+                    class=" border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-700 ml-4"
+                    name="ean" />
+
+                <input type="text" placeholder="Numero de serie" value="{{ request.GET.serial_number }}"
+                    class=" border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-700 ml-4"
+                    name="serial_number" />
                 <button type="submit" class="bg-purple-700 text-white px-4 rounded-r-md hover:bg-purple-800">
                     <i class="fa fa-search" aria-hidden="true"></i>
                 </button>
             </form>
+            
         </div>
 
+        
         <!-- Botão novo -->
         <a href="{% url 'product_create' %}"
             class="flex items-center bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">
@@ -29,6 +39,29 @@
             Novo Produto
         </a>
     </div>
+    <div class="flax">
+            <form action="{% url 'product_list' %}" method="get" class="flex mb-4">
+
+                <select name="category" class="rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-700" >
+                    <option value="" {% if not request.GET.category %}selected{% endif %}>Todas as categorias</option>
+                    {% for category in categories %}
+                        <option value="{{ category.pk }}" {% if request.GET.category == category.pk|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="brand" class="rounded-l-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-700 ml-4 col-6">
+                    <option value="">Todas as marcas</option>
+                    {% for brand in brands %}
+                        <option value="{{ brand.pk }}" {% if request.GET.brand == brand.pk|stringformat:"s" %}selected{% endif %}>{{ brand.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="bg-purple-700 text-white px-4 rounded-r-md hover:bg-purple-800">
+                    <i class="fa-solid fa-filter" aria-hidden="true"></i> Filtro
+                </button>
+            </form>
+        </div>
+    
 
     <!-- Tabela -->
     <div class="overflow-x-auto bg-white rounded shadow">

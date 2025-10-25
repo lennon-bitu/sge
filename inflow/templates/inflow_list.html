@@ -46,6 +46,7 @@
             <tbody>
                 {% for inflow in inflows %}
                 <tr class="border-b odd:bg-white even:bg-gray-50 ">
+                    <td class="px-6 py-4">{{inflow.pk}}</td>
                     <td class="px-6 py-4">{{inflow.product}}</td>
                     <td class="px-6 py-4">{{inflow.supplier}}</td>
                     <td class="px-6 py-4">{{inflow.quantity}}</td>
